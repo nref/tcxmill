@@ -40,7 +40,7 @@ def get_speed_conversion(unit):
 
 def edit_laps(laps, speeds, units, loglevel):
     '''
-        Recalculate the all of the given lap distances.
+        Recalculate the all of the given laps' distances.
         Assumes each lap was run at the corresponding constant speed.
     '''
 
@@ -59,7 +59,7 @@ def edit_laps(laps, speeds, units, loglevel):
 
 def edit_lap(lap, speed, dist, time, loglevel):
     '''
-        Recalculate the given TCX lap's distances.
+        Recalculate the given lap's distances.
         Assumes each lap was run at the given constant speed.
 
         Results depend on previously accumulated lap distances and times.
