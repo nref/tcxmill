@@ -1,4 +1,7 @@
 # tcxmill
+
+Blog entry: https://blog.sltr.us/2019/10/tcxmill.html
+
     usage: tcxmill.py [-h] [-o [OUTPUT]] [-u [UNITS]] [-v [VERBOSITY]]
                     input speeds [speeds ...]
 
