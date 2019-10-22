@@ -17,8 +17,8 @@ Blog entry: https://blog.sltr.us/2019/10/tcxmill.html
                             output tcx file. Default output file for "<file>.tcx "
                             is "<file>-edited.tcx"
     -u [UNITS], --units [UNITS]
-                            lap speed units. Supported: {'km/h': 0.277778, 'm/s':
-                            1.0, 'min/mi': 26.8224, 'min/km': 16.6666667}
+                            lap speed units. Supported: km/h, m/s, min/mi, min/km,
+                        mi/h
     -v [VERBOSITY], --verbosity [VERBOSITY]
                             Level of detailed output (0=no detail, 1=some detail,
                             >2=verbose)
@@ -40,6 +40,7 @@ Blog entry: https://blog.sltr.us/2019/10/tcxmill.html
 
 The assumptions behind tcxmill are:
 
+* You use a treadmill
 * You use Garmin Connect and Strava
 * You use your device's lap key to transition through your structured workout
 * The treadmill speed of each lap is constant
