@@ -24,7 +24,7 @@ def get_speed_conversions():
         "m/s"    :  1.0,
         "min/mi" : 26.8224,
         "min/km" : 16.6666667,
-        "mi/h"   : 0.44704
+        "mi/h"   :  0.44704
     }
 
 def get_speed_conversion(unit):
@@ -170,14 +170,14 @@ def parse_args():
     parser.add_argument('input', help='input tcx file')
     parser.add_argument('speeds', nargs='+', type=float, help='List of lap treadmill speeds')
     parser.add_argument('-o', '--output', nargs='?', help='output tcx file. Default output file for "<file>.tcx " is "<file>-edited.tcx"')
-    parser.add_argument('-u', '--units', nargs='?', default='ms', help=f"lap speed units. Supported: {', '.join(str(key) for key in get_speed_conversions().keys())}")
+    parser.add_argument('-u', '--units', nargs='?', default='m/s', help=f"lap speed units. Supported: {', '.join(str(key) for key in get_speed_conversions().keys())}")
     parser.add_argument('-v', '--verbosity', nargs='?', type=int, default='1', help=f'Level of detailed output (0=no detail, 1=some detail, >2=verbose)')
     
     return parser.parse_args()
 
-def get_output(args):
-    if args.output is not None:
-        return args.output
+def get_output(output):
+    if output is not None:
+        return output
 
     split = args.input.split('.')
     return f'{split[0]}-edited.{split[-1]}'
@@ -189,7 +189,7 @@ def main():
 
     edit_laps(laps, args.speeds, args.units, args.verbosity)
 
-    write(tree, get_output(args))
+    write(tree, get_output(args.output))
 
 if __name__ == '__main__':
     main()
