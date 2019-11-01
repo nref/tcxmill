@@ -175,11 +175,11 @@ def parse_args():
     
     return parser.parse_args()
 
-def get_output(output):
+def get_output(input, output):
     if output is not None:
         return output
 
-    split = args.input.split('.')
+    split = input.split('.')
     return f'{split[0]}-edited.{split[-1]}'
 
 def main():
@@ -189,7 +189,7 @@ def main():
 
     edit_laps(laps, args.speeds, args.units, args.verbosity)
 
-    write(tree, get_output(args.output))
+    write(tree, get_output(args.input, args.output))
 
 if __name__ == '__main__':
     main()
