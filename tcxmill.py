@@ -62,7 +62,8 @@ def get_speed_conversion(unit):
 
 def convert_to_seconds(unit):
     '''
-        Return the value which converts the given unit to m/{unit of time} or {unit of time}/m
+        Return the multiplier to convert 
+        the time component of the given unit to seconds
     '''
 
     conversions = get_seconds_conversions()
