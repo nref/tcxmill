@@ -290,6 +290,16 @@ def recalc_trackpoint_from_speed(trackpoint, speed, dist, time, loglevel):
 
     return new_dist, new_time
 
+def add_distance(tree, delta):
+    trackpoints = get_elems_of_name(tree, "Trackpoint")
+    
+    # Edit each trackpoint
+    for trackpoint in trackpoints:
+        trackpoint_distance_elem = get_elems_of_name(trackpoint, 'DistanceMeters')[0]
+        distance = float(trackpoint_distance_elem.text)
+        distance += delta
+        trackpoint_distance_elem.text = str(distance)
+        
 def read(file):
     return ET.parse(file)
 
@@ -315,13 +325,14 @@ def parse_args():
         description='Recalculate tcx lap and trackpoint distances from lap treadmill speeds',
         epilog=f'Example: {sys.argv[0]} activity.tcx 11.5 14.0 11.5')
 
-    parser.add_argument('input',                                                 help='input tcx file')
-    parser.add_argument('speeds',            nargs='+', type=float,              help='List of lap treadmill speeds')
-    parser.add_argument('-d', '--distances', nargs='+', type=float,              help='List of distances. Use this when laps representing workout structure are not available.')
-    parser.add_argument('-o', '--output',    nargs='?',                          help='output tcx file. Default output file for "<file>.tcx " is "<file>-edited.tcx"')
-    parser.add_argument('-u', '--units',     nargs='?',           default='m/s', help=f"lap speed units. Supported: {', '.join(str(key) for key in get_speed_conversions().keys())}")
-    parser.add_argument('-v', '--verbosity', nargs='?', type=int, default='1',   help=f'Level of detailed output (0=no detail, 1=some detail, >2=verbose)')
-    
+    parser.add_argument('input',                                                   help='input tcx file')
+    parser.add_argument('speeds',            nargs='+', type=float,                help='List of lap treadmill speeds')
+    parser.add_argument('-d', '--distances', nargs='+', type=float,                help='List of distances. Use this when laps representing workout structure are not available.')
+    parser.add_argument('-o', '--output',    nargs='?',                            help='output tcx file. Default output file for "<file>.tcx " is "<file>-edited.tcx"')
+    parser.add_argument('-u', '--units',     nargs='?',             default='m/s', help=f"lap speed units. Supported: {', '.join(str(key) for key in get_speed_conversions().keys())}")
+    parser.add_argument('-v', '--verbosity', nargs='?', type=int,   default='1',   help=f'Level of detailed output (0=no detail, 1=some detail, >2=verbose)')
+    parser.add_argument('-a', '--add',       nargs='?', type=float, default='1',   help=f'Add the given value to each trackpoint')
+
     return parser.parse_args()
 
 def get_output(input, output):
@@ -336,7 +347,9 @@ def main():
     tree = read(args.input)
     laps = get_elems_of_name(tree, 'Lap')
 
-    if args.distances is not None:
+    if args.add is not None:
+        add_distance(tree, args.add)
+    elif args.distances is not None:
         recalc_laps_from_speed_and_distance(laps, args.speeds, args.distances, args.units, args.verbosity)
     else:
         recalc_laps_from_speed(laps, args.speeds, args.units, args.verbosity)
