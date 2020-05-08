@@ -1,6 +1,6 @@
 # tcxmill
 
-Blog entry: https://blog.sltr.us/2019/10/tcxmill.html
+Blog entry: https://www.sltr.us/2019/10/tcxmill.html
 
     usage: tcxmill.py [-h] [-s SPEEDS [SPEEDS ...]] [-d DISTANCES [DISTANCES ...]]
                     [-o [OUTPUT]] [-u [UNITS]] [-v [VERBOSITY]] [-a [ADD]]
