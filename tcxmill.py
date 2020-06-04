@@ -9,6 +9,7 @@ from io import BytesIO
 
 tcx_time_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 
+
 def get_elems_of_name(tree, name):
     '''
         Recursively find Elements of the given ElementTree or Element 
@@ -20,18 +21,20 @@ def get_elems_of_name(tree, name):
 
     return [elem for elem in tree.iter() if name in elem.tag]
 
+
 def get_speed_conversions():
     '''
         Return unit conversions to m/s
     '''
 
     return {
-        "km/h"   :  0.277778,
-        "m/s"    :  1.0,
-        "min/mi" : 26.8224,
-        "min/km" : 16.6666667,
-        "mi/h"   :  0.44704
+        "km/h":  0.277778,
+        "m/s":  1.0,
+        "min/mi": 26.8224,
+        "min/km": 16.6666667,
+        "mi/h":  0.44704
     }
+
 
 def get_seconds_conversions():
     '''
@@ -40,12 +43,13 @@ def get_seconds_conversions():
     '''
 
     return {
-        "km/h"   : 3600, # 1h == 3600s
-        "m/s"    : 1.0,
-        "min/mi" : 0.01666666666, # = 1/60s
-        "min/km" : 0.01666666666, # = 1/60s
-        "mi/h"   : 3600
+        "km/h": 3600,  # 1h == 3600s
+        "m/s": 1.0,
+        "min/mi": 0.01666666666,  # = 1/60s
+        "min/km": 0.01666666666,  # = 1/60s
+        "mi/h": 3600
     }
+
 
 def get_speed_conversion(unit):
     '''
@@ -73,6 +77,7 @@ def convert_to_seconds(unit):
 
     return conversions[unit]
 
+
 class TrackpointWindow:
 
     def __init__(self, start_time, start_dist, speed, distance, units):
@@ -97,11 +102,12 @@ class TrackpointWindow:
 
             for trackpoint in lap_trackpoint_elems:
                 time_elem = get_elems_of_name(trackpoint, 'Time')[0]
-                trackpoint_time = datetime.strptime(time_elem.text, tcx_time_format)
+                trackpoint_time = datetime.strptime(
+                    time_elem.text, tcx_time_format)
 
                 if trackpoint_time >= self.start_time and trackpoint_time <= self.end_time:
                     window_trackpoints.append(trackpoint)
-            
+
             if len(window_trackpoints) > 0:
                 window_laps.append(lap)
 
@@ -119,18 +125,21 @@ class TrackpointWindow:
                   f'starting at {self.start_time} '
                   f'and ending at {self.end_time} '
                   f'({self.duration:.2f}s)')
-        
+
         dist = self.start_dist
         time = self.start_time
-        
+
         for trackpoint in window_trackpoints:
-            dist, time = recalc_trackpoint_from_speed(trackpoint, 
-                                                    self.speed * get_speed_conversion(units),
-                                                    dist,
-                                                    time, 
-                                                    loglevel)
+            dist, time = recalc_trackpoint_from_speed(trackpoint,
+                                                      self.speed *
+                                                      get_speed_conversion(
+                                                          units),
+                                                      dist,
+                                                      time,
+                                                      loglevel)
 
         return self.end_time, dist
+
 
 def recalc_laps_from_speed_and_distance(laps, speeds, distances, units, loglevel):
     '''
@@ -139,20 +148,24 @@ def recalc_laps_from_speed_and_distance(laps, speeds, distances, units, loglevel
         Assumes each distance was run at the corresponding constant speed.
     '''
 
-    if (len(laps) == 0 ):
+    if (len(laps) == 0):
         raise ValueError(f'Found no laps but requre at least 1')
 
     if (len(distances) != len(speeds)):
-        raise ValueError(f'Found {len(distances)} distances but {len(speeds)} speeds')
+        raise ValueError(
+            f'Found {len(distances)} distances but {len(speeds)} speeds')
 
     start_time = datetime.strptime(laps[0].get('StartTime'), tcx_time_format)
     start_dist = 0.0
 
     for speed, distance in zip(speeds, distances):
-        window = TrackpointWindow(start_time, start_dist, speed, distance, units)
-        start_time, start_dist = window.recalc_trackpoints(laps, units, loglevel)
+        window = TrackpointWindow(
+            start_time, start_dist, speed, distance, units)
+        start_time, start_dist = window.recalc_trackpoints(
+            laps, units, loglevel)
 
     recalc_laps(laps, loglevel)
+
 
 def recalc_laps(laps, loglevel):
     '''
@@ -171,6 +184,7 @@ def recalc_laps(laps, loglevel):
         distances[0].text = str(lap_distance)
         maxSpeeds[0].text = str(lap_max_speed)
 
+
 def get_max_speed_and_distance(trackpoints):
     '''
         Return the maximum speed from and distance traveled over the given trackpoints
@@ -180,7 +194,8 @@ def get_max_speed_and_distance(trackpoints):
 
     # Get total distance and max speed
     for trackpoint in trackpoints:
-        trackpoint_distance_elem = get_elems_of_name(trackpoint, 'DistanceMeters')[0]
+        trackpoint_distance_elem = get_elems_of_name(
+            trackpoint, 'DistanceMeters')[0]
         trackpoint_speed_elem = get_elems_of_name(trackpoint, 'Speed')[0]
 
         distance = float(trackpoint_distance_elem.text)
@@ -188,6 +203,7 @@ def get_max_speed_and_distance(trackpoints):
         max_speed = max_speed if trackpoint_speed < max_speed else trackpoint_speed
 
     return max_speed, distance
+
 
 def recalc_laps_from_speed(laps, speeds, units, loglevel):
     '''
@@ -197,16 +213,17 @@ def recalc_laps_from_speed(laps, speeds, units, loglevel):
 
     if (len(laps) != len(speeds)):
         raise ValueError(f'Found {len(laps)} laps but {len(speeds)} speeds')
-    
-    dist = 0.0 # Cumulative distance
-    time = None # Lap completion datetime
-    
+
+    dist = 0.0  # Cumulative distance
+    time = None  # Lap completion datetime
+
     for speed, lap in zip(speeds, laps):
-        dist, time = recalc_lap_from_speed(lap, 
-                                           speed * get_speed_conversion(units), 
-                                           dist, 
+        dist, time = recalc_lap_from_speed(lap,
+                                           speed * get_speed_conversion(units),
+                                           dist,
                                            time,
                                            loglevel)
+
 
 def recalc_lap_from_speed(lap, speed, dist, time, loglevel):
     '''
@@ -225,11 +242,12 @@ def recalc_lap_from_speed(lap, speed, dist, time, loglevel):
 
     # Edit each trackpoint
     for trackpoint in trackpoints:
-        new_dist, new_time = recalc_trackpoint_from_speed(trackpoint, speed, new_dist, new_time, loglevel)
+        new_dist, new_time = recalc_trackpoint_from_speed(
+            trackpoint, speed, new_dist, new_time, loglevel)
 
     # Update lap total distance
     distances[0].text = str(new_dist - dist)
-    
+
     # Update lap max speed
     maxSpeeds[0].text = str(speed)
 
@@ -237,6 +255,7 @@ def recalc_lap_from_speed(lap, speed, dist, time, loglevel):
         print_lap(new_dist, dist, speed, new_time)
 
     return new_dist, new_time
+
 
 def print_lap(new_dist, dist, speed, new_time):
 
@@ -249,30 +268,33 @@ def print_lap(new_dist, dist, speed, new_time):
 
     print(f'{{"Lap": {json.dumps(lap)}}}')
 
+
 def recalc_trackpoint_from_speed(trackpoint, speed, dist, time, loglevel):
     '''
         Recalculate the trackpoint's distance as if it occured at the given speed.
         Also update the trackpoint's speed field to the given speed.
     '''
 
-    # Assume the device was paused if 
+    # Assume the device was paused if
     # a trackpoint lasts longer than this duration.
     # The trackpoint will not contribute to lap distance.
     assume_paused_duration_s = 10
 
     new_dist = dist
-    new_time = datetime.strptime(get_elems_of_name(trackpoint, 'Time')[0].text, tcx_time_format)
+    new_time = datetime.strptime(get_elems_of_name(
+        trackpoint, 'Time')[0].text, tcx_time_format)
 
     # Get time in seconds since the previous trackpoint
     time_diff = 0
-    if time is not None: # Not yet set for first trackpoint
+    if time is not None:  # Not yet set for first trackpoint
         time_diff = (new_time - time).total_seconds()
-    
+
     if (time_diff > assume_paused_duration_s):
-        print(f"Warning: assuming the device was paused during trackpoint with very long duration {time_diff}s")
+        print(
+            f"Warning: assuming the device was paused during trackpoint with very long duration {time_diff}s")
         speed = 0
 
-    # Set trackpoint distance to the distance that would 
+    # Set trackpoint distance to the distance that would
     # be traveled at the given speed
     trackpoint_distance = get_elems_of_name(trackpoint, 'DistanceMeters')[0]
     new_dist += speed*time_diff
@@ -290,21 +312,25 @@ def recalc_trackpoint_from_speed(trackpoint, speed, dist, time, loglevel):
 
     return new_dist, new_time
 
+
 def add_distance(tree, delta):
     trackpoints = get_elems_of_name(tree, "Trackpoint")
-    
+
     # Edit each trackpoint
     for trackpoint in trackpoints:
-        trackpoint_distance_elem = get_elems_of_name(trackpoint, 'DistanceMeters')[0]
+        trackpoint_distance_elem = get_elems_of_name(
+            trackpoint, 'DistanceMeters')[0]
         distance = float(trackpoint_distance_elem.text)
         distance += delta
         trackpoint_distance_elem.text = str(distance)
-        
+
+
 def read(file):
     return ET.parse(file)
 
+
 def write(tree, file):
-    
+
     encoding = 'utf-8'
 
     # Write to fake file since ElementTree.tostring doesn't include xml declaration
@@ -320,20 +346,29 @@ def write(tree, file):
     with open(file, "w") as f2:
         print(s, file=f2)
 
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Recalculate tcx lap and trackpoint distances from lap treadmill speeds',
         epilog=f'Example: {sys.argv[0]} activity.tcx --speeds 11.5 14.0 11.5 --units mi/h')
 
-    parser.add_argument('input',                                                   help='input tcx file')
-    parser.add_argument('-s', '--speeds',    nargs='+', type=float,                help='List of speeds')
-    parser.add_argument('-d', '--distances', nargs='+', type=float,                help='List of distances. Use this when laps representing workout structure are not available.')
-    parser.add_argument('-o', '--output',    nargs='?',                            help='output tcx file. Default output file for "<file>.tcx " is "<file>-edited.tcx"')
-    parser.add_argument('-u', '--units',     nargs='?',             default='m/s', help=f"lap speed units. Supported: {', '.join(str(key) for key in get_speed_conversions().keys())}")
-    parser.add_argument('-v', '--verbosity', nargs='?', type=int,   default='1',   help=f'Level of detailed output (0=no detail, 1=some detail, >2=verbose)')
-    parser.add_argument('-a', '--add',       nargs='?', type=float,                help=f'Add the given value to each trackpoint')
+    parser.add_argument('input',
+                        help='input tcx file')
+    parser.add_argument('-s', '--speeds',    nargs='+',
+                        type=float,                help='List of speeds')
+    parser.add_argument('-d', '--distances', nargs='+', type=float,
+                        help='List of distances. Use this when laps representing workout structure are not available.')
+    parser.add_argument('-o', '--output',    nargs='?',
+                        help='output tcx file. Default output file for "<file>.tcx " is "<file>-edited.tcx"')
+    parser.add_argument('-u', '--units',     nargs='?',             default='m/s',
+                        help=f"lap speed units. Supported: {', '.join(str(key) for key in get_speed_conversions().keys())}")
+    parser.add_argument('-v', '--verbosity', nargs='?', type=int,   default='1',
+                        help=f'Level of detailed output (0=no detail, 1=some detail, >2=verbose)')
+    parser.add_argument('-a', '--add',       nargs='?', type=float,
+                        help=f'Add the given value to each trackpoint')
 
     return parser.parse_args()
+
 
 def get_output(input, output):
     if output is not None:
@@ -342,20 +377,24 @@ def get_output(input, output):
     split = input.split('.')
     return f'{split[0]}-edited.{split[-1]}'
 
+
 def main():
     args = parse_args()
     tree = read(args.input)
     laps = get_elems_of_name(tree, 'Lap')
-    
+
     if args.add is not None:
         add_distance(tree, args.add)
     elif args.speeds is not None:
         if args.distances is not None:
-            recalc_laps_from_speed_and_distance(laps, args.speeds, args.distances, args.units, args.verbosity)
+            recalc_laps_from_speed_and_distance(
+                laps, args.speeds, args.distances, args.units, args.verbosity)
         else:
-            recalc_laps_from_speed(laps, args.speeds, args.units, args.verbosity)
+            recalc_laps_from_speed(
+                laps, args.speeds, args.units, args.verbosity)
 
     write(tree, get_output(args.input, args.output))
+
 
 if __name__ == '__main__':
     main()
