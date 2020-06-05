@@ -12,10 +12,10 @@ tcx_time_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 def get_elems_of_name(tree, name):
     '''
-        Recursively find Elements of the given ElementTree or Element 
+        Recursively find Elements of the given ElementTree or Element
         whose tag contains the given string.
 
-        This is useful for ignoring XML namespace, 
+        This is useful for ignoring XML namespace,
         e.g. to find "Speed" when the element tag is "ns3:Speed"
     '''
 
@@ -38,7 +38,7 @@ def get_speed_conversions():
 
 def get_seconds_conversions():
     '''
-        Return the multiplier to convert 
+        Return the multiplier to convert
         the time component of the given unit to seconds
     '''
 
@@ -66,7 +66,7 @@ def get_speed_conversion(unit):
 
 def convert_to_seconds(unit):
     '''
-        Return the multiplier to convert 
+        Return the multiplier to convert
         the time component of the given unit to seconds
     '''
 
@@ -143,7 +143,7 @@ class TrackpointWindow:
 
 def recalc_laps_from_speed_and_distance(laps, speeds, distances, units, loglevel):
     '''
-        From the given workout structure (sequential speed/distance pairs), 
+        From the given workout structure (sequential speed/distance pairs),
         recalculate the lap and trackpoint distances and speeds.
         Assumes each distance was run at the corresponding constant speed.
     '''
@@ -205,6 +205,27 @@ def get_max_speed_and_distance(trackpoints):
     return max_speed, distance
 
 
+def recalc_laps_from_distance(laps, distances, loglevel):
+    '''
+        Recalculate the all of the given laps distances.
+        Assumes each lap has the time and distance given to calc the speed.
+    '''
+
+    if (len(laps) != len(distances)):
+        raise ValueError(
+            f'Found {len(laps)} distances but {len(distances)} distances')
+
+    dist = 0.0  # Cumulative distance
+    time = None  # Lap completion datetime
+
+    for distance, lap in zip(distances, laps):
+        dist, time = recalc_lap_from_distance(lap,
+                                              distance,
+                                              dist,
+                                              time,
+                                              loglevel)
+
+
 def recalc_laps_from_speed(laps, speeds, units, loglevel):
     '''
         Recalculate the all of the given laps' distances.
@@ -239,6 +260,40 @@ def recalc_lap_from_speed(lap, speed, dist, time, loglevel):
 
     new_dist = dist
     new_time = time
+
+    # Edit each trackpoint
+    for trackpoint in trackpoints:
+        new_dist, new_time = recalc_trackpoint_from_speed(
+            trackpoint, speed, new_dist, new_time, loglevel)
+
+    # Update lap total distance
+    distances[0].text = str(new_dist - dist)
+
+    # Update lap max speed
+    maxSpeeds[0].text = str(speed)
+
+    if (loglevel > 0):
+        print_lap(new_dist, dist, speed, new_time)
+
+    return new_dist, new_time
+
+
+def recalc_lap_from_distance(lap, distance, dist, time, loglevel):
+    '''
+        Recalculate the given lap's distances.
+        Assumes each lap was run at the given constant speed.
+
+        Results depend on previously accumulated lap distances and times.
+    '''
+
+    trackpoints = get_elems_of_name(lap, 'Trackpoint')
+    distances = get_elems_of_name(lap, 'DistanceMeters')
+    lapSeconds = get_elems_of_name(lap, 'TotalTimeSeconds')
+    maxSpeeds = get_elems_of_name(lap, 'MaximumSpeed')
+
+    new_dist = dist
+    new_time = time
+    speed = distance / float(lapSeconds[0].text)
 
     # Edit each trackpoint
     for trackpoint in trackpoints:
@@ -392,6 +447,9 @@ def main():
         else:
             recalc_laps_from_speed(
                 laps, args.speeds, args.units, args.verbosity)
+    elif args.distances is not None:
+        recalc_laps_from_distance(
+            laps, args.distances, args.verbosity)
 
     write(tree, get_output(args.input, args.output))
 

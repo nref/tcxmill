@@ -165,6 +165,55 @@ A workout where the lap key *was not* used. In lieu of using laps to indicate wo
 Strava after tcxmill: 
 ![alt text][8mi-charts-after]
 
+# Example 4
+A workout where the lap key was used and you know only the distance you run. Export your workout from Garmin Connect to TCX.
+
+It was an Interval training following this structure:
+* Warm up: 1km
+* 16x
+  * 400m run (15.5km/h ~ 16.5km/h)
+  * 300m recover easy
+* Cool down: 1km
+
+So the lap key was used to register the times I did run, but I don't know the speed, so the way to fix it is like this:
+
+
+    python3 tcxmill.py ~/Downloads/activity_5039667047.tcx --distances 1000 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 400 300 1000
+    {"Lap": {"Distance": "1000m", "Cumulative": "1000m", "Speed": "2.70 m/s", "Completed": "2020-06-04 16:13:30"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "1400m", "Speed": "4.04 m/s", "Completed": "2020-06-04 16:15:09"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "1700m", "Speed": "2.63 m/s", "Completed": "2020-06-04 16:17:03"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "2100m", "Speed": "4.71 m/s", "Completed": "2020-06-04 16:18:28"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "2400m", "Speed": "2.61 m/s", "Completed": "2020-06-04 16:20:23"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "2800m", "Speed": "4.26 m/s", "Completed": "2020-06-04 16:21:57"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "3100m", "Speed": "2.68 m/s", "Completed": "2020-06-04 16:23:49"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "3500m", "Speed": "4.35 m/s", "Completed": "2020-06-04 16:25:21"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "3800m", "Speed": "2.50 m/s", "Completed": "2020-06-04 16:27:21"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "4200m", "Speed": "4.30 m/s", "Completed": "2020-06-04 16:28:54"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "4500m", "Speed": "2.36 m/s", "Completed": "2020-06-04 16:31:01"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "4900m", "Speed": "4.35 m/s", "Completed": "2020-06-04 16:32:33"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "5200m", "Speed": "2.88 m/s", "Completed": "2020-06-04 16:34:17"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "5600m", "Speed": "4.49 m/s", "Completed": "2020-06-04 16:35:46"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "5900m", "Speed": "2.75 m/s", "Completed": "2020-06-04 16:37:35"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "6300m", "Speed": "4.26 m/s", "Completed": "2020-06-04 16:39:09"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "6600m", "Speed": "2.75 m/s", "Completed": "2020-06-04 16:40:58"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "7000m", "Speed": "4.44 m/s", "Completed": "2020-06-04 16:42:28"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "7300m", "Speed": "2.46 m/s", "Completed": "2020-06-04 16:44:30"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "7700m", "Speed": "4.44 m/s", "Completed": "2020-06-04 16:46:00"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "8000m", "Speed": "2.61 m/s", "Completed": "2020-06-04 16:47:55"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "8400m", "Speed": "4.40 m/s", "Completed": "2020-06-04 16:49:26"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "8700m", "Speed": "2.59 m/s", "Completed": "2020-06-04 16:51:22"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "9100m", "Speed": "4.40 m/s", "Completed": "2020-06-04 16:52:53"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "9400m", "Speed": "2.61 m/s", "Completed": "2020-06-04 16:54:48"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "9800m", "Speed": "4.44 m/s", "Completed": "2020-06-04 16:56:18"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "10100m", "Speed": "2.59 m/s", "Completed": "2020-06-04 16:58:14"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "10500m", "Speed": "4.44 m/s", "Completed": "2020-06-04 16:59:44"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "10800m", "Speed": "2.61 m/s", "Completed": "2020-06-04 17:01:39"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "11200m", "Speed": "4.40 m/s", "Completed": "2020-06-04 17:03:10"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "11500m", "Speed": "2.63 m/s", "Completed": "2020-06-04 17:05:04"}}
+    {"Lap": {"Distance": "400m", "Cumulative": "11900m", "Speed": "4.55 m/s", "Completed": "2020-06-04 17:06:32"}}
+    {"Lap": {"Distance": "300m", "Cumulative": "12200m", "Speed": "2.46 m/s", "Completed": "2020-06-04 17:08:34"}}
+    {"Lap": {"Distance": "1000m", "Cumulative": "13200m", "Speed": "2.64 m/s", "Completed": "2020-06-04 17:14:53"}}
+
 
 
 [export-tcx]: ./res/30km-progression-2019-09-25/export-tcx.png "Strava charts before running tcxmill"
