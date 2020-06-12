@@ -128,7 +128,7 @@ Another workout where the lap key was used. Strava before tcxmill:
     Warning: assuming the device was paused during trackpoint with very long duration 114.0s
     {"Lap": {"Distance": "10002m", "Cumulative": "10002m", "Speed": "3.19 m/s", "Completed": "2019-10-18 10:41:20"}}
 
-**Note** The warning above shows that tcxmill detected a device pause. The device is assumed paused if a trackpoint lasts longer than 30s. tcxmill assumes zero speed during a device pause. This is useful if you need to jump off the treadmill for e.g. a bathroom break or your workout has rest intervals.
+**Note** The warning above shows that tcxmill detected a device pause. The device is assumed paused if a trackpoint lasts longer than 10s. tcxmill assumes zero speed during a device pause. This is useful if you need to jump off the treadmill for e.g. a bathroom break or your workout has rest intervals.
 
 [Processed TCX workout](./res/10km-2019-10-18/activity-edited.tcx)
 
