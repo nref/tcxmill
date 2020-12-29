@@ -317,7 +317,7 @@ def write(tree, file):
     # Strava doesn't like namespaces. Remove "<ns2:...>" etc
     s = re.sub(r'ns\d+:', '', s)
 
-    with open(file, "w") as f2:
+    with open(file, "w", encoding=encoding) as f2:
         print(s, file=f2)
 
 def parse_args():
