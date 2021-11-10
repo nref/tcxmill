@@ -1,6 +1,6 @@
 # tcxmill
 
-![Alt text](res/logo/tcxmill full.png?raw=true "tcxmill logo")
+![tcxmill logo](res/logo/tcxmill full.png)
 
 [Blog entry](https://www.sltr.us/Edit%20TCX%20Treadmill%20Runs%20with%20tcxmill.html)
 
