@@ -1,6 +1,6 @@
 # tcxmill
 
-![tcxmill logo](https://raw.githubusercontent.com/slater1/tcxmill/master/res/logo/tcxmill%20full.png)
+![tcxmill logo](https://raw.githubusercontent.com/slater1/tcxmill/master/res/logo/tcxmill%20512x256.png)
 
 [Blog entry](https://www.sltr.us/Edit%20TCX%20Treadmill%20Runs%20with%20tcxmill.html)
 
